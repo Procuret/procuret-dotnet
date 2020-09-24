@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ProcuretAPI</id>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <title>Procuret API</title>
     <authors>hugh@procuret.com</authors>
     <owners>Procuret Operating Pty Ltd</owners>
@@ -23,7 +23,7 @@
       type="git"
       url="https://github.com/Procuret/procuret-dotnet/"
       branch="master"
-      commit="d735528d00caef1f389613082497b06e3ed02863"
+      commit="1dbb428cbdb1b96b41a3eb948f28b7d4394ff5c7"
     />
   </metadata>
   <files>
