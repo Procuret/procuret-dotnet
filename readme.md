@@ -17,7 +17,19 @@ an earlier .NET release, please [contact us](mailto:support@procuret.com).
 
 ## Installation
 
-_WIP_
+Procuret .NET is available as a
+[Nuget package](https://www.nuget.org/packages/ProcuretAPI/).
+
+```bash
+dotnet add package ProcuretAPI
+```
+
+See Microsoft's documentation for more information about installing Nuget
+packages in Visual Studios on [Windows](https://docs.microsoft.com/en-us/nuget/quickstart/install-and-use-a-package-in-visual-studio) and
+[macOS](https://docs.microsoft.com/en-us/nuget/quickstart/install-and-use-a-package-in-visual-studio-mac).
+
+If you require assistance installing Procuret .NET in your development
+environment, please [contact us](mailto:support@procuret.com).
 
 ## Documentation
 
@@ -34,13 +46,21 @@ In Procuret Python, the `Session` class will handle all authentication for you.
 For example, it will compute the SHA256 signature that must be included
 in your HTTP headers.
 
-#### Properties
+#### Initialiser
 
-WIP
+##### Parameters
 
-#### Methods
+1. `String` apiKey
+2. `ulong` sessionId
 
-WIP
+##### Example Initialisation
+
+```cs
+Session session = Session(
+    apiKey: "your_api_key",
+    sessionId: 441121225 // Your Session ID
+)
+```
 
 ### `InstalmentLink`
 
@@ -51,13 +71,37 @@ over time, while you the Supplier are paid upfront.
 When you create an `InstalmentLink`, you can ask Procuret to send an email
 to the customer Business on your behalf.
 
-#### Properties
-
-WIP
-
 #### Methods
 
-WIP
+##### `static async Task<String>.create(...)`
+
+###### Parameters
+
+1. `Int64` supplierId - Your unique Supplier ID
+2. `String` customerEmail - The email of the customer to whom a Procuret
+payment invitation email should be sent.
+3. `String` invoiceIdentifier - Your invoice identifier. E.g. `"INV-001"`
+4. `Decimal` invoiceValue - The amount payable by the customer
+5. `CommunicationOption` communication - Instance of `CommunicationOption`
+enumeration
+6. `Session` session - The `Session` to use when authenticating your request
+
+###### Example Usage
+
+```cs
+await InstalmentLink.create(
+    supplierId: 589121125121,
+    customerEmail: "someone@somewhere.com",
+    invoiceIdentifier: "INV-001",
+    invoiceValue: Convert.ToDecimal("422.22"),
+    communciation: CommunicationOption.NotifyCustomer,
+    session: session // See Session create example above
+)
+```
+
+At present, `InstalmentLink` does not return anything useful. The `String`
+returned at task completion contains the raw JSON response from Procuret API.
+You can expect a more useful return value in future versions of Procuret .NET.
 
 ### `CommunicationOption`
 
