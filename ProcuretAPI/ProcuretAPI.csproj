@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <PackageVersion>0.0.2</PackageVersion>
+    <Authors>Hugh Jeremy</Authors>
+    <Copyright>Copyright Procuret Operating Pty Ltd</Copyright>
+    <PackageIconUrl>https://avatars1.githubusercontent.com/u/44771526?s=400&amp;u=d3552d3d7485a8e4e62c92963e62e648e9fe1cba&amp;v=4</PackageIconUrl>
+    <PackageLicenseUrl>https://github.com/Procuret/procuret-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <Owners>Procuret Operating Pty Ltd</Owners>
+    <PackageProjectUrl>https://procuret.com</PackageProjectUrl>
+    <Summary>A .NET Standard library for interfacing with the Procuret API</Summary>
+    <PackageTags>finance, api</PackageTags>
+    <Title>Procuret .NET</Title>
+    <Description>A .NET Standard Libary for interface with the Procuret API</Description>
   </PropertyGroup>
 
 </Project>
