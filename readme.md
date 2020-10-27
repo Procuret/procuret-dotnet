@@ -33,7 +33,7 @@ environment, please [contact us](mailto:support@procuret.com).
 
 ## Documentation
 
-Procuret Python offers a library of classes that map to services provided
+Procuret .NET offers a library of classes that map to services provided
 by the Procuret API.
 
 ### `Session`
@@ -42,7 +42,7 @@ Sessions are the means of authenticating requests to the Procuret API. All
 requests to Procuret API, save for those creating Sessions themselves, require
 a Session.
 
-In Procuret Python, the `Session` class will handle all authentication for you.
+In Procuret .NET, the `Session` class will handle all authentication for you.
 For example, it will compute the SHA256 signature that must be included
 in your HTTP headers.
 
