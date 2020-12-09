@@ -12,7 +12,7 @@ A Microsoft .NET Standard library for interfacing with the Procuret API.
 ## .NET API Compatibility
 
 Procuret .NET targets .NET Standard 2.0, which means it is compatible with
-.NET Framework 4.7.2+ and .NET Core 1.0+. If you require comptatiblity with
+.NET Framework 4.6.1+ and .NET Core 2.0+. If you require comptatiblity with
 an earlier .NET release, please [contact us](mailto:support@procuret.com).
 
 ## Installation
