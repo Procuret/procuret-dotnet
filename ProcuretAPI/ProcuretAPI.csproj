@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PackageVersion>0.0.2</PackageVersion>
     <Authors>Hugh Jeremy</Authors>
     <Copyright>Copyright Procuret Operating Pty Ltd</Copyright>
@@ -13,6 +13,10 @@
     <PackageTags>finance, api</PackageTags>
     <Title>Procuret .NET</Title>
     <Description>A .NET Standard Libary for interface with the Procuret API</Description>
+    <ReleaseVersion>0.0.3</ReleaseVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType></DebugType>
+  </PropertyGroup>
 </Project>

@@ -45,7 +45,7 @@ namespace ProcuretAPI
 
             String resultBody = await ApiRequest.MakeAsyncPost(
                 path: Session.path,
-                bodyJsonData: "something",
+                body: "something",
                 session: null
             );
 

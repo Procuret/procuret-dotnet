@@ -14,20 +14,17 @@ namespace ProcuretAPI_Tests
 
             Session session = new Session(
                 apiKey: "placebo",
-                sessionId: 111
+                sessionId: 123
             );
 
-            String response = await InstalmentLink.Create(
-                supplierId: 111,
+            InstalmentLink link = await InstalmentLink.Create(
+                supplierId: 4000,
                 customerEmail: "someone@procuret-test-domain.org",
                 invoiceIdentifier: "Test ID",
                 invoiceValue: Convert.ToDecimal("422.22"),
                 communication: CommunicationOption.NotifyCustomer,
                 session: session
             );
-
-            Console.WriteLine(response);
-            Assert.True(response.Length > 0);
 
             return;
 

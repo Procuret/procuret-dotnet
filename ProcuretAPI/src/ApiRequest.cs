@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace ProcuretAPI
 {
@@ -21,10 +23,42 @@ namespace ProcuretAPI
 
         private static readonly HttpClient httpClient = new HttpClient();
 
+        internal static async Task<String> MakeAsyncPost<T> (
+            String path,
+            T body,
+            Session? session,
+            HttpClient httpClient = null
+        )
+        {
+
+            String xmlBody;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                var serializer = new DataContractSerializer(typeof(T));
+                serializer.WriteObject(stream, body);
+                stream.Seek(0, SeekOrigin.Begin);
+
+                using (var reader = new StreamReader(stream))
+                {
+                    xmlBody = reader.ReadToEnd();
+                }
+
+
+            }
+
+            return await ApiRequest.MakeAsyncPost(
+                path,
+                xmlBody,
+                session,
+                httpClient
+            );
+
+        }
+
 
         internal static async Task<String> MakeAsyncPost (
             String path,
-            String bodyJsonData,
+            String bodyXmlData,
             Session? session,
             HttpClient httpClient = null
         )
@@ -37,15 +71,17 @@ namespace ProcuretAPI
 
             String requestPath = "https://procuret.com/api" + path;
             StringContent content = new StringContent(
-                bodyJsonData,
+                bodyXmlData,
                 System.Text.Encoding.UTF8,
-                "application/json"
+                "application/xml"
             );
 
             HttpRequestMessage message = new HttpRequestMessage();
             message.Method = HttpMethod.Post;
             message.RequestUri = new Uri(requestPath);
             message.Content = content;
+
+            message.Headers.Add("accept", "application/xml");
 
             if (session != null)
             {
@@ -59,18 +95,15 @@ namespace ProcuretAPI
                 );
             }
 
-            System.Diagnostics.Debug.WriteLine("Before request");
             HttpResponseMessage response = await httpClient.SendAsync(
                 message
             );
-            System.Diagnostics.Debug.WriteLine("After request");
 
             if (!response.IsSuccessStatusCode) {
                 throw new ApiRequestException("API Error");
             }
 
             string responseBody = await response.Content.ReadAsStringAsync();
-            System.Diagnostics.Debug.WriteLine("After Read");
 
             return responseBody;
             
@@ -88,14 +121,8 @@ namespace ProcuretAPI
             DateTime foo = DateTime.UtcNow;
             long timestamp = ((DateTimeOffset)foo).ToUnixTimeSeconds();
 
-            System.Diagnostics.Debug.WriteLine("### TIMESTAMP ###");
-            System.Diagnostics.Debug.WriteLine(timestamp);
-
             String time = (timestamp - (timestamp % 900)).ToString();
             String payload = time + path;
-
-            System.Diagnostics.Debug.WriteLine("### PAYLOAD ###");
-            System.Diagnostics.Debug.WriteLine(payload);
 
             byte[] payloadBytes = Encoding.UTF8.GetBytes(
                 payload
