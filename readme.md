@@ -62,7 +62,7 @@ Session session = Session(
 )
 ```
 
-### `InstalmentLink`
+### `struct InstalmentLink`
 
 `InstalmentLink` facilitates the creation of customised links to the Procuret
 Instalment Product (PIP). PIP allows a customer Business to pay for a purchase
@@ -111,7 +111,16 @@ var link = await InstalmentLink.create(
 )
 ```
 
-### `CommunicationOption`
+### `struct EntityHeadline`
+
+A type containing basic data about a legal person.
+
+#### Properties
+
+`String` EntityId - A unique Procuret identifier for the legal person
+`String` LegalEntityName - The name of the legal person, e.g. "ACME Ltd"
+
+### `enum CommunicationOption`
 
 An enumeration of instructions you can send Procuret in some contexts, to
 tell it how you wish for it to contact (or not contact) the a customer.
