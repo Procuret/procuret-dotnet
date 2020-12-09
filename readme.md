@@ -11,7 +11,7 @@ A Microsoft .NET Standard library for interfacing with the Procuret API.
 
 ## .NET API Compatibility
 
-Procuret .NET targets .NET Standard 1.6, which means it is compatible with
+Procuret .NET targets .NET Standard 2.0, which means it is compatible with
 .NET Framework 4.7.2+ and .NET Core 1.0+. If you require comptatiblity with
 an earlier .NET release, please [contact us](mailto:support@procuret.com).
 
@@ -71,9 +71,21 @@ over time, while you the Supplier are paid upfront.
 When you create an `InstalmentLink`, you can ask Procuret to send an email
 to the customer Business on your behalf.
 
+To create a new `InstalmentLink`, call `InstalmentLink.Create()`. `.Create()`
+operates asynchronously, so use the `await` keyword to initalise the link
+into a variable.
+
+#### Properties
+
+`String` PublicId - unique ID of this `InstalmentLink`
+`EntityHeadline` Supplier - the Supplier to which the link applies
+`Decimal` InvoiceAmount - the amount the link attempts to transact
+`String` InvoiceIdentifier - the identifier of the invoice
+`String` InviteeEmail - the email address associated with the link
+
 #### Methods
 
-##### `static async Task<String>.create(...)`
+##### `static async Task<InstalmentLink>.create(...)`
 
 ###### Parameters
 
@@ -89,7 +101,7 @@ enumeration
 ###### Example Usage
 
 ```cs
-await InstalmentLink.create(
+var link = await InstalmentLink.create(
     supplierId: 589121125121,
     customerEmail: "someone@somewhere.com",
     invoiceIdentifier: "INV-001",
@@ -98,10 +110,6 @@ await InstalmentLink.create(
     session: session // See Session create example above
 )
 ```
-
-At present, `InstalmentLink` does not return anything useful. The `String`
-returned at task completion contains the raw JSON response from Procuret API.
-You can expect a more useful return value in future versions of Procuret .NET.
 
 ### `CommunicationOption`
 
