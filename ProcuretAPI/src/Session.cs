@@ -30,27 +30,6 @@ namespace ProcuretAPI
             return;
         }
 
-        // Private pending XML API availability
-        private static async void Create(
-            String email,
-            String plaintextSecret
-        )
-        {
-
-            String data = String.Format(
-                Session.createTemplate,
-                email,
-                plaintextSecret
-            );
-
-            String resultBody = await ApiRequest.MakeAsyncPost(
-                path: Session.path,
-                body: "something",
-                session: null
-            );
-
-
-        }
 
     }
 

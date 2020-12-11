@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
-using System.Xml;
-using System.IO;
+using System.Net.Http;
 
 
 namespace ProcuretAPI
@@ -63,17 +62,16 @@ namespace ProcuretAPI
                 emailCustomer
             );
 
-            String resultBody = await ApiRequest.MakeAsyncPost<CreatePayload>(
+            String resultBody = await ApiRequest.Make<CreatePayload>(
                 path: InstalmentLink.path,
                 body: payload,
+                method: HttpMethod.Post,
                 session: session
             );
 
-            var dcs = new DataContractSerializer(typeof(DecodePayload));
-            var reader = new StringReader(resultBody);
-            var xmlReader = XmlReader.Create(reader);
-            var decodePayload = (DecodePayload)dcs.ReadObject(xmlReader);
-            xmlReader.Close();
+            var decodePayload = ApiRequest.DecodeResponse<DecodePayload>(
+                resultBody
+            );
 
             var link = new InstalmentLink(
                 decodePayload.public_id,

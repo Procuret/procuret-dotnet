@@ -2,20 +2,16 @@ using System;
 using Xunit;
 using ProcuretAPI;
 using System.Threading.Tasks;
+using ProcuretAPI_Tests.Variants;
 
 
 namespace ProcuretAPI_Tests
 {
-    public class CreateInstalmentLink
+    public class CreateInstalmentLink: WithSession
     {
         [Fact]
         public async Task TestCreateInstalmentLink()
         {
-
-            Session session = new Session(
-                apiKey: "placebo",
-                sessionId: 123
-            );
 
             InstalmentLink link = await InstalmentLink.Create(
                 supplierId: 4000,
@@ -23,7 +19,7 @@ namespace ProcuretAPI_Tests
                 invoiceIdentifier: "Test ID",
                 invoiceValue: Convert.ToDecimal("422.22"),
                 communication: CommunicationOption.NotifyCustomer,
-                session: session
+                session: this.Session
             );
 
             return;

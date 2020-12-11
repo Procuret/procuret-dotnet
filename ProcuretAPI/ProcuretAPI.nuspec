@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ProcuretAPI</id>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <title>Procuret API</title>
     <authors>hugh@procuret.com</authors>
     <owners>Procuret Operating Pty Ltd</owners>
@@ -15,7 +15,7 @@
     </description>
     <summary>A .NET Standard libary for the Procuret API. Procuret facilitates business to business transations. Suppliers get paid upfront, while customer businesses pay over time. Use Procuret .NET to add Procuret as a payment option in your .NET application.
     </summary>
-    <releaseNotes>InstalmentLink.Create() now returns Task&lt;,InstalmentLink&gt;,</releaseNotes>
+    <releaseNotes>Added `ProspectivePayment`, `InstalmentLink` properties</releaseNotes>
     <copyright>Copyright 2020 Procuret Operating Pty Ltd</copyright>
     <tags>api finance</tags>
     <language>en-au</language>

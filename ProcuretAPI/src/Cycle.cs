@@ -1,9 +1,9 @@
 ﻿using System;
 namespace ProcuretAPI
 {
-    public enum Cycle
+    public enum Cycle: Int16
     {
-        ADVANCE,
-        ARREARS
+        ADVANCE = 1,
+        ARREARS = 2
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Xml;
 
 namespace ProcuretAPI
 {
@@ -16,17 +17,19 @@ namespace ProcuretAPI
         public ApiRequestException(string message) : base(message) { }
     }
 
-    internal class ApiRequest { 
+    internal struct ApiRequest { 
 
         private const String signatureHeader = "x-procuret-signature";
         private const String idHeader = "x-procuret-session-id";
+        private const String apiEndpoint = "https://procuret.com/api";
 
         private static readonly HttpClient httpClient = new HttpClient();
 
-        internal static async Task<String> MakeAsyncPost<T> (
+        internal static async Task<String> Make<T> (
             String path,
             T body,
             Session? session,
+            HttpMethod method,
             HttpClient httpClient = null
         )
         {
@@ -46,40 +49,30 @@ namespace ProcuretAPI
 
             }
 
-            return await ApiRequest.MakeAsyncPost(
+            return await ApiRequest.Make(
                 path,
                 xmlBody,
                 session,
+                method,
                 httpClient
             );
 
         }
 
-
-        internal static async Task<String> MakeAsyncPost (
+        private static async Task<String> SendRequest(
             String path,
-            String bodyXmlData,
+            String pathAndQuery,
+            HttpRequestMessage message,
             Session? session,
+            HttpMethod method,
             HttpClient httpClient = null
         )
         {
 
-            if (httpClient == null)
-            {
-                httpClient = ApiRequest.httpClient;
-            }
-
-            String requestPath = "https://procuret.com/api" + path;
-            StringContent content = new StringContent(
-                bodyXmlData,
-                System.Text.Encoding.UTF8,
-                "application/xml"
+            message.Method = method;
+            message.RequestUri = new Uri(
+                ApiRequest.apiEndpoint + pathAndQuery
             );
-
-            HttpRequestMessage message = new HttpRequestMessage();
-            message.Method = HttpMethod.Post;
-            message.RequestUri = new Uri(requestPath);
-            message.Content = content;
 
             message.Headers.Add("accept", "application/xml");
 
@@ -95,17 +88,80 @@ namespace ProcuretAPI
                 );
             }
 
+            if (httpClient == null)
+            {
+                httpClient = ApiRequest.httpClient;
+            }
+
             HttpResponseMessage response = await httpClient.SendAsync(
                 message
             );
 
-            if (!response.IsSuccessStatusCode) {
+            if (!response.IsSuccessStatusCode)
+            {
                 throw new ApiRequestException("API Error");
             }
 
             string responseBody = await response.Content.ReadAsStringAsync();
 
             return responseBody;
+
+        }
+
+        internal static async Task<String> Make (
+            String path,
+            QueryString query,
+            Session? session,
+            HttpMethod method,
+            HttpClient httpClient = null
+        )
+        {
+
+            String pathAndQuery = path + query.Query;
+
+            HttpRequestMessage message = new HttpRequestMessage();
+
+            return await ApiRequest.SendRequest(
+                path,
+                pathAndQuery,
+                message,
+                session,
+                method,
+                httpClient
+            );
+
+        }
+
+
+        internal static async Task<String> Make (
+            String path,
+            String bodyXmlData,
+            Session? session,
+            HttpMethod method,
+            HttpClient httpClient = null
+        )
+        {
+
+            String requestPath = "https://procuret.com/api" + path;
+            StringContent content = new StringContent(
+                bodyXmlData,
+                System.Text.Encoding.UTF8,
+                "application/xml"
+            );
+
+            HttpRequestMessage message = new HttpRequestMessage();
+
+            message.Content = content;
+
+            return await ApiRequest.SendRequest(
+                path,
+                path,
+                message,
+                session,
+                method,
+                httpClient
+            );
+
             
         }
 
@@ -131,5 +187,18 @@ namespace ProcuretAPI
             byte[] hashBytes = hmac.ComputeHash(payloadBytes);
             return Convert.ToBase64String(hashBytes);
         }
+
+        internal static T DecodeResponse<T>(String data)
+        {
+            var dcs = new DataContractSerializer(typeof(T));
+            var reader = new StringReader(data);
+            var xmlReader = XmlReader.Create(reader);
+            var responsePayload = (T)dcs.ReadObject(xmlReader);
+            xmlReader.Close();
+
+            return responsePayload;
+
+        }
+
     }
 }

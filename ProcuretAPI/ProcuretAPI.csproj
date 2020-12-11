@@ -13,7 +13,7 @@
     <PackageTags>finance, api</PackageTags>
     <Title>Procuret .NET</Title>
     <Description>A .NET Standard Libary for interface with the Procuret API</Description>
-    <ReleaseVersion>0.0.3</ReleaseVersion>
+    <ReleaseVersion>0.0.4</ReleaseVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
