@@ -111,6 +111,51 @@ var link = await InstalmentLink.create(
 )
 ```
 
+### `struct ProspectivePayment`
+
+A `ProspectivePayment` represents the amount of money that a customer may
+pay, per payment period, should they use the Procuret Instalment Product o pay
+for their purchase.
+
+In other words, you can use `ProspectivePayment` to give customers a preview
+of the cost of using Procuret. Retrieve a `ProspectivePayment` for any
+number of periods. At this time, Procuret .NET only supports monthly payments.
+
+#### Properties
+
+`Decimal` RecurringPayment - The amount the customer will pay per period
+`String` SupplierId - The ID of the Supplier to which thise price applies
+`Int16` PaymentCount - The number of payments the customer would make
+`Period` Period - The length of the payment period (always `.MONTH`)
+`Cycle` Cycle - The cycle of the payment (always `.ADVANCE`)
+
+#### Methods
+
+##### `static async Task<ProspectivePayment> Retrieve(...)`
+
+Use .Retrieve() to look up the price a customer would pay per period using
+the Procuret Instalment Product.
+
+###### Parameters
+
+1. `Session` session - An instance of `Session` authenticating your request
+2. `String` supplierId - Your Supplier ID
+3. `Decimal` principle - The total value of the purchase, including GST
+4. `Int16` paymentCount - The number of payments the customer would make
+
+###### Example Usage
+
+```cs
+var payment = await ProspectivePayment.Retrieve(
+    session: session                       // See Session example elsewhere
+    supplierId: "589121125121",
+    principle: Convert.ToDecimal("4200"),  // Includes GST
+    paymentCount: 12                       // Implies 12 monthly payments
+)
+
+Console.WriteLine(payment.RecurringPayment.ToString())
+```
+
 ### `struct EntityHeadline`
 
 A type containing basic data about a legal person.
