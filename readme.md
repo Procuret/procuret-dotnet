@@ -77,15 +77,15 @@ into a variable.
 
 #### Properties
 
-`String` PublicId - unique ID of this `InstalmentLink`
-`EntityHeadline` Supplier - the Supplier to which the link applies
-`Decimal` InvoiceAmount - the amount the link attempts to transact
-`String` InvoiceIdentifier - the identifier of the invoice
-`String` InviteeEmail - the email address associated with the link
+1. `String` PublicId - unique ID of this `InstalmentLink`
+2. `EntityHeadline` Supplier - the Supplier to which the link applies
+3. `Decimal` InvoiceAmount - the amount the link attempts to transact
+4. `String` InvoiceIdentifier - the identifier of the invoice
+5. `String` InviteeEmail - the email address associated with the link
 
 #### Methods
 
-##### `static async Task<InstalmentLink>.create(...)`
+##### `static async Task<InstalmentLink>.Create(...)`
 
 ###### Parameters
 
@@ -101,7 +101,7 @@ enumeration
 ###### Example Usage
 
 ```cs
-var link = await InstalmentLink.create(
+var link = await InstalmentLink.Create(
     supplierId: 589121125121,
     customerEmail: "someone@somewhere.com",
     invoiceIdentifier: "INV-001",
@@ -114,7 +114,7 @@ var link = await InstalmentLink.create(
 ### `struct ProspectivePayment`
 
 A `ProspectivePayment` represents the amount of money that a customer may
-pay, per payment period, should they use the Procuret Instalment Product o pay
+pay, per payment period, should they use the Procuret Instalment Product to pay
 for their purchase.
 
 In other words, you can use `ProspectivePayment` to give customers a preview
@@ -123,11 +123,11 @@ number of periods. At this time, Procuret .NET only supports monthly payments.
 
 #### Properties
 
-`Decimal` RecurringPayment - The amount the customer will pay per period
-`String` SupplierId - The ID of the Supplier to which thise price applies
-`Int16` PaymentCount - The number of payments the customer would make
-`Period` Period - The length of the payment period (always `.MONTH`)
-`Cycle` Cycle - The cycle of the payment (always `.ADVANCE`)
+1. `Decimal` RecurringPayment - The amount the customer will pay per period
+2. `String` SupplierId - The ID of the Supplier to which thise price applies
+3. `Int16` PaymentCount - The number of payments the customer would make
+4. `Period` Period - The length of the payment period (always `.MONTH`)
+5. `Cycle` Cycle - The cycle of the payment (always `.ADVANCE`)
 
 #### Methods
 
