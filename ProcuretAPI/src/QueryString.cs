@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
+
 namespace ProcuretAPI
 {
     internal struct QueryString
@@ -36,6 +38,12 @@ namespace ProcuretAPI
         internal QueryString(QueryParameter[] parameters)
         {
             this.parameters = parameters;
+            return;
+        }
+
+        internal QueryString(List<QueryParameter> parameters)
+        {
+            this.parameters = parameters.ToArray();
             return;
         }
 
