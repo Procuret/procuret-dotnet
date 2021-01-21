@@ -151,9 +151,32 @@ var payment = await ProspectivePayment.Retrieve(
     supplierId: "589121125121",
     principle: Convert.ToDecimal("4200"),  // Includes GST
     paymentCount: 12                       // Implies 12 monthly payments
-)
+);
 
-Console.WriteLine(payment.RecurringPayment.ToString())
+Console.WriteLine(payment.RecurringPayment.ToString());
+```
+
+##### `static async Task<ProspectivePayment[]> RetrieveMany(...)`
+
+###### Parameters
+
+1. `Session` session - An instance of `Session` authenticating your request
+2. `String` supplierId - Your Supplier ID
+3. `Decimal` principle - The total value of the purchase, including GST
+
+###### Example Usage
+
+```cs
+var payments = await ProspectivePayment.RetrieveMany(
+    session: session,                      // See Session example elswhere
+    supplierId: "589121125121",
+    principle: Convert.ToDecimal("4200")   // Includes GST
+);
+
+foreach (ProspectivePayment payment in payments)
+{
+    Console.WriteLine(payment.RecurringPayment.ToString());
+}
 ```
 
 ### `struct EntityHeadline`
