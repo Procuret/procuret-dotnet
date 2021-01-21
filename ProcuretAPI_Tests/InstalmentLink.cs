@@ -45,7 +45,11 @@ namespace ProcuretAPI_Tests
                 session: this.Session
             );
 
-            Assert.True(links.Length > 0, "Actual length: " + links.Length.ToString());
+            Assert.True(
+                links.Length > 0,
+                "Actual length: " + links.Length.ToString()
+            );
+
 
             return;
 

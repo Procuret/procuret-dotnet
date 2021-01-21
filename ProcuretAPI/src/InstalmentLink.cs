@@ -17,15 +17,13 @@ namespace ProcuretAPI
         public readonly Decimal InvoiceAmount;
         public readonly String InvoiceIdentifier;
         public readonly String InviteeEmail;
-        public readonly LinkOpen[] Opens;
 
         internal InstalmentLink(
             String publicId,
             EntityHeadline supplier,
             String inviteeEmail,
             Decimal invoiceAmount,
-            String invoiceIdentifier,
-            LinkOpen[] linkOpens
+            String invoiceIdentifier
         )
         {
             this.PublicId = publicId;
@@ -33,7 +31,7 @@ namespace ProcuretAPI
             this.InviteeEmail = inviteeEmail;
             this.InvoiceAmount = invoiceAmount;
             this.InvoiceIdentifier = invoiceIdentifier;
-            this.Opens = linkOpens;
+
             return;
         }
 
@@ -56,7 +54,7 @@ namespace ProcuretAPI
             }
 
             String stringSupplierId = supplierId.ToString();
-            String stringInvoiceValue = invoiceValue.ToString();
+            String stringInvoiceValue = Math.Round(invoiceValue, 2).ToString();
 
             CreatePayload payload = new CreatePayload(
                 stringSupplierId,
@@ -82,8 +80,7 @@ namespace ProcuretAPI
                 decodePayload.supplier,
                 decodePayload.invitee_email,
                 Convert.ToDecimal(decodePayload.invoice_amount),
-                decodePayload.invoice_identifier,
-                decodePayload.opens
+                decodePayload.invoice_identifier
             );
 
             return link;
@@ -142,13 +139,13 @@ namespace ProcuretAPI
 
             foreach (InstalmentLink.DecodePayload link in decodePayload)
             {
+
                 resultList.Add(new InstalmentLink(
                     link.public_id,
                     link.supplier,
                     link.invitee_email,
                     Convert.ToDecimal(link.invoice_amount),
-                    link.invoice_identifier,
-                    link.opens
+                    link.invoice_identifier
                 ));
                 continue;
             }
@@ -209,9 +206,6 @@ namespace ProcuretAPI
 
             [DataMember]
             internal readonly String invoice_identifier;
-
-            [DataMember]
-            internal readonly LinkOpen[] opens;
 
         }
     }
