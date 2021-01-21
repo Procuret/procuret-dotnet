@@ -20,8 +20,24 @@ namespace ProcuretAPI_Tests
                 12
             );
 
+            Assert.True(payment.PaymentCount == 12);
+
             return;
 
+        }
+
+        [Fact]
+        public async Task TestListProspectivePayment()
+        {
+            var payments = await ProspectivePayment.RetrieveMany(
+                session: this.Session,
+                supplierId: "4000",
+                principle: Convert.ToDecimal("1000")
+            );
+
+            Assert.True(payments.Length > 0);
+
+            return;
         }
     }
 }

@@ -15,8 +15,8 @@
     </description>
     <summary>A .NET Standard libary for the Procuret API. Procuret facilitates business to business transations. Suppliers get paid upfront, while customer businesses pay over time. Use Procuret .NET to add Procuret as a payment option in your .NET application.
     </summary>
-    <releaseNotes>Added `ProspectivePayment`, `InstalmentLink` properties</releaseNotes>
-    <copyright>Copyright 2020 Procuret Operating Pty Ltd</copyright>
+    <releaseNotes>Added `ProspectivePayment.RetrieveMany()`, `InstalmentLink.RetrieveMany()`</releaseNotes>
+    <copyright>Copyright 2021 Procuret Operating Pty Ltd</copyright>
     <tags>api finance</tags>
     <language>en-au</language>
     <repository

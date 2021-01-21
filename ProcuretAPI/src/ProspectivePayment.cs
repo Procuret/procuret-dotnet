@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Net.Http;
+using System.Collections.Generic;
 
 
 namespace ProcuretAPI
@@ -9,6 +10,7 @@ namespace ProcuretAPI
     public struct ProspectivePayment
     {
         internal const String Path = "/credit/prospective-payment";
+        internal const String ListPath = ProspectivePayment.Path + "/list";
 
         public readonly Decimal RecurringPayment;
         public readonly String SupplierId;
@@ -70,9 +72,57 @@ namespace ProcuretAPI
 
         }
 
+        public static async Task<ProspectivePayment[]> RetrieveMany(
+            Session session,
+            String supplierId,
+            Decimal principle,
+            HttpClient httpClient = null
+        )
+        {
+
+            QueryParameter[] parameters = {
+                new QueryParameter(supplierId, "supplier_id"),
+                new QueryParameter(principle.ToString(), "principle"),
+                new QueryParameter((Int16)Cycle.ADVANCE, "cycle")
+            };
+
+            QueryString query = new QueryString(parameters);
+
+            String resultBody = await ApiRequest.Make(
+                ProspectivePayment.ListPath,
+                query,
+                session,
+                HttpMethod.Get,
+                httpClient
+            );
+
+            var responsePayload = ApiRequest.DecodeResponse<ArrayResponse>(
+                resultBody
+            );
+
+            var resultList = new List<ProspectivePayment>();
+
+            foreach (ResponsePayload payload in responsePayload)
+            {
+                resultList.Add(new ProspectivePayment(
+                    Convert.ToDecimal(payload.payment),
+                    payload.supplierId,
+                    payload.periods,
+                    (Cycle)payload.cycle
+
+                ));
+                continue;
+            }
+
+            return resultList.ToArray();
+
+        }
+
+        [CollectionDataContract(Name = "procuret_data", Namespace = "")]
+        internal class ArrayResponse : List<ResponsePayload> { }
 
         [DataContract(Name="procuret_data", Namespace="")]
-        internal struct ResponsePayload
+        internal class ResponsePayload
         {
             [DataMember]
             internal readonly String payment;
