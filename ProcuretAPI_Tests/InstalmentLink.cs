@@ -19,7 +19,8 @@ namespace ProcuretAPI_Tests
                 invoiceIdentifier: "Test ID",
                 invoiceValue: Convert.ToDecimal("422.22"),
                 communication: CommunicationOption.NotifyCustomer,
-                session: this.Session
+                session: this.Session,
+                Currency.Aud
             );
 
             return;
@@ -36,7 +37,8 @@ namespace ProcuretAPI_Tests
                 invoiceIdentifier: "Test ID",
                 invoiceValue: Convert.ToDecimal("422.22"),
                 communication: CommunicationOption.NotifyCustomer,
-                session: this.Session
+                session: this.Session,
+                Currency.Aud
             );
 
             InstalmentLink[] links = await InstalmentLink.RetrieveMany(

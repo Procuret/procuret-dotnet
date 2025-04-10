@@ -17,13 +17,15 @@ namespace ProcuretAPI
         public readonly Decimal InvoiceAmount;
         public readonly String InvoiceIdentifier;
         public readonly String InviteeEmail;
+        public readonly Currency Denomination;
 
         internal InstalmentLink(
             String publicId,
             EntityHeadline supplier,
             String inviteeEmail,
             Decimal invoiceAmount,
-            String invoiceIdentifier
+            String invoiceIdentifier,
+            Currency denomination
         )
         {
             this.PublicId = publicId;
@@ -31,6 +33,7 @@ namespace ProcuretAPI
             this.InviteeEmail = inviteeEmail;
             this.InvoiceAmount = invoiceAmount;
             this.InvoiceIdentifier = invoiceIdentifier;
+            this.Denomination = denomination;
 
             return;
         }
@@ -41,7 +44,8 @@ namespace ProcuretAPI
             String invoiceIdentifier,
             Decimal invoiceValue,
             CommunicationOption communication,
-            Session session
+            Session session,
+            Currency denomination
         )
         {
             String emailCustomer;
@@ -61,7 +65,8 @@ namespace ProcuretAPI
                 stringInvoiceValue,
                 customerEmail,
                 invoiceIdentifier,
-                emailCustomer
+                emailCustomer,
+                (int)denomination
             );
 
             String resultBody = await ApiRequest.Make<CreatePayload>(
@@ -80,7 +85,8 @@ namespace ProcuretAPI
                 decodePayload.supplier,
                 decodePayload.invitee_email,
                 Convert.ToDecimal(decodePayload.invoice_amount),
-                decodePayload.invoice_identifier
+                decodePayload.invoice_identifier,
+                (Currency)decodePayload.denomination_id
             );
 
             return link;
@@ -145,7 +151,8 @@ namespace ProcuretAPI
                     link.supplier,
                     link.invitee_email,
                     Convert.ToDecimal(link.invoice_amount),
-                    link.invoice_identifier
+                    link.invoice_identifier,
+                    (Currency)link.denomination_id
                 ));
                 continue;
             }
@@ -167,13 +174,16 @@ namespace ProcuretAPI
             private readonly String invoice_identifier;
             [DataMember]
             private readonly String communicate;
+            [DataMember]
+            private readonly int denomination;
 
             internal CreatePayload(
                 String supplierId,
                 String invoiceAmount,
                 String inviteeEmail,
                 String invoiceIdentifier,
-                String communicate
+                String communicate,
+                int denomination
             )
             {
                 this.supplier_id = supplierId;
@@ -181,6 +191,7 @@ namespace ProcuretAPI
                 this.invitee_email = inviteeEmail;
                 this.invoice_identifier = invoiceIdentifier;
                 this.communicate = communicate;
+                this.denomination = denomination;
                 return;
             }
         }
@@ -206,6 +217,9 @@ namespace ProcuretAPI
 
             [DataMember]
             internal readonly String invoice_identifier;
+
+            [DataMember]
+            internal readonly int denomination_id;
 
         }
     }
