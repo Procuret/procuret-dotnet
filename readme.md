@@ -11,8 +11,7 @@ A Microsoft .NET Standard library for interfacing with the Procuret API.
 
 ## .NET API Compatibility
 
-Procuret .NET targets .NET Standard 2.0, which means it is compatible with
-.NET Framework 4.6.1+ and .NET Core 2.0+. If you require comptatiblity with
+Procuret .NET targets .NET 8.0. If you require comptatiblity with
 an earlier .NET release, please [contact us](mailto:support@procuret.com).
 
 ## Installation
@@ -82,6 +81,7 @@ into a variable.
 3. `Decimal` InvoiceAmount - the amount the link attempts to transact
 4. `String` InvoiceIdentifier - the identifier of the invoice
 5. `String` InviteeEmail - the email address associated with the link
+6. `Currency` Denomination - the currency in which the link is denominated
 
 #### Methods
 
@@ -89,7 +89,7 @@ into a variable.
 
 ###### Parameters
 
-1. `Int64` supplierId - Your unique Supplier ID
+1. `long` supplierId - Your unique Supplier ID
 2. `String` customerEmail - The email of the customer to whom a Procuret
 payment invitation email should be sent.
 3. `String` invoiceIdentifier - Your invoice identifier. E.g. `"INV-001"`
@@ -97,6 +97,8 @@ payment invitation email should be sent.
 5. `CommunicationOption` communication - Instance of `CommunicationOption`
 enumeration
 6. `Session` session - The `Session` to use when authenticating your request
+7. `Currency` denomination - The currency in which the link should be
+denominated
 
 ###### Example Usage
 
@@ -107,7 +109,8 @@ var link = await InstalmentLink.Create(
     invoiceIdentifier: "INV-001",
     invoiceValue: Convert.ToDecimal("422.22"),
     communciation: CommunicationOption.NotifyCustomer,
-    session: session // See Session create example above
+    session: session, // See Session create example above
+    denomination: Currency.Aud
 )
 ```
 
@@ -124,7 +127,7 @@ number of periods. At this time, Procuret .NET only supports monthly payments.
 #### Properties
 
 1. `Decimal` RecurringPayment - The amount the customer will pay per period
-2. `String` SupplierId - The ID of the Supplier to which thise price applies
+2. `long` SupplierId - The ID of the Supplier to which thise price applies
 3. `Int16` PaymentCount - The number of payments the customer would make
 4. `Period` Period - The length of the payment period (always `.MONTH`)
 5. `Cycle` Cycle - The cycle of the payment (always `.ADVANCE`)
@@ -139,7 +142,7 @@ the Procuret Instalment Product.
 ###### Parameters
 
 1. `Session` session - An instance of `Session` authenticating your request
-2. `String` supplierId - Your Supplier ID
+2. `long` supplierId - Your Supplier ID
 3. `Decimal` principle - The total value of the purchase, including GST
 4. `Int16` paymentCount - The number of payments the customer would make
 
@@ -148,7 +151,7 @@ the Procuret Instalment Product.
 ```cs
 var payment = await ProspectivePayment.Retrieve(
     session: session                       // See Session example elsewhere
-    supplierId: "589121125121",
+    supplierId: 589121125121,
     principle: Convert.ToDecimal("4200"),  // Includes GST
     paymentCount: 12                       // Implies 12 monthly payments
 );
@@ -161,7 +164,7 @@ Console.WriteLine(payment.RecurringPayment.ToString());
 ###### Parameters
 
 1. `Session` session - An instance of `Session` authenticating your request
-2. `String` supplierId - Your Supplier ID
+2. `long` supplierId - Your Supplier ID
 3. `Decimal` principle - The total value of the purchase, including GST
 
 ###### Example Usage
@@ -169,7 +172,7 @@ Console.WriteLine(payment.RecurringPayment.ToString());
 ```cs
 var payments = await ProspectivePayment.RetrieveMany(
     session: session,                      // See Session example elswhere
-    supplierId: "589121125121",
+    supplierId: 589121125121,
     principle: Convert.ToDecimal("4200")   // Includes GST
 );
 
@@ -185,7 +188,7 @@ A type containing basic data about a legal person.
 
 #### Properties
 
-`String` EntityId - A unique Procuret identifier for the legal person
+`long` EntityId - A unique Procuret identifier for the legal person
 `String` LegalEntityName - The name of the legal person, e.g. "ACME Ltd"
 
 ### `enum CommunicationOption`
@@ -197,6 +200,16 @@ tell it how you wish for it to contact (or not contact) the a customer.
 
 - `.EMAIL_CUSTOMER` - Procuret will contact the customer by email
 - `.DO_NOT_CONTACT_CUSTOMER` - Procuret will not try to contact the customer
+
+### `enum Currency`
+
+An enumeration of currencies in which Procuret transactions may be
+denominated.
+
+#### Cases
+
+- `.Aud` - Australian dollars
+- `.Nzd` - New Zealand dollars
 
 ## Support
 
