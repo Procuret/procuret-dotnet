@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>0.0.2</PackageVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackageVersion>0.0.6</PackageVersion>
     <Authors>Hugh Jeremy</Authors>
     <Copyright>Copyright Procuret Operating Pty Ltd</Copyright>
     <PackageIconUrl>https://avatars1.githubusercontent.com/u/44771526?s=400&amp;u=d3552d3d7485a8e4e62c92963e62e648e9fe1cba&amp;v=4</PackageIconUrl>
@@ -13,7 +13,7 @@
     <PackageTags>finance, api</PackageTags>
     <Title>Procuret .NET</Title>
     <Description>A .NET Standard Libary for interface with the Procuret API</Description>
-    <ReleaseVersion>0.0.4</ReleaseVersion>
+    <ReleaseVersion>0.0.6</ReleaseVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

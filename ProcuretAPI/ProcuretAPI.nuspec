@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ProcuretAPI</id>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <title>Procuret API</title>
     <authors>hugh@procuret.com</authors>
     <owners>Procuret Operating Pty Ltd</owners>

@@ -1,23 +1,24 @@
 ﻿using System;
-using System.Runtime.Serialization;
-
+using System.Text.Json.Serialization;
 
 namespace ProcuretAPI
 {
-
-    [DataContract]
     public struct EntityHeadline
     {
-        [DataMember]
-        private readonly String legal_entity_name;
+        [JsonPropertyName("legal_entity_name")]
+        private readonly string legal_entity_name;
 
-        [DataMember]
-        private readonly String entity_id;
+        [JsonPropertyName("entity_id")]
+        private readonly long entity_id;
 
-        public String EntityId { get { return this.entity_id;  } }
-        public String LegalEntityName {
-            get { return this.legal_entity_name;  }
+        public long EntityId 
+        {
+            get { return this.entity_id; }
         }
 
+        public string LegalEntityName 
+        {
+            get { return this.legal_entity_name; }
+        }
     }
 }

@@ -1,141 +1,131 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
 using System.Net.Http;
 using System.Collections.Generic;
-
+using System.Text.Json.Serialization; // If you want [JsonPropertyName]
 
 namespace ProcuretAPI
 {
     public struct ProspectivePayment
     {
-        internal const String Path = "/credit/prospective-payment";
-        internal const String ListPath = ProspectivePayment.Path + "/list";
+        internal const string Path = "/credit/prospective-payment";
+        internal const string ListPath = Path + "/list";
 
-        public readonly Decimal RecurringPayment;
-        public readonly String SupplierId;
-        public readonly Int16 PaymentCount;
+        public readonly decimal RecurringPayment;
+        public readonly long SupplierId;
+        public readonly short PaymentCount;
         public readonly Period Period;
         public readonly Cycle Cycle;
 
         internal ProspectivePayment(
-            Decimal recurringPayment,
-            String supplierId,
-            Int16 paymentCount,
+            decimal recurringPayment,
+            long supplierId,
+            short paymentCount,
             Cycle cycle
         )
         {
-            this.RecurringPayment = recurringPayment;
-            this.SupplierId = supplierId;
-            this.PaymentCount = paymentCount;
-            this.Period = Period.MONTH;  // Only .MONTH available at this time
-            this.Cycle = cycle;
-            return;
+            RecurringPayment = recurringPayment;
+            SupplierId = supplierId;
+            PaymentCount = paymentCount;
+            Period = Period.MONTH; // Only MONTH is used
+            Cycle = cycle;
         }
 
+        /// <summary>
+        /// Retrieve a single ProspectivePayment from the API.
+        /// </summary>
         public static async Task<ProspectivePayment> Retrieve(
             Session session,
-            String supplierId,
-            Decimal principle,
-            Int16 paymentCount,
+            long supplierId,
+            decimal principle,
+            short paymentCount,
             HttpClient httpClient = null
         )
         {
-
             QueryParameter[] parameters = {
-                new QueryParameter(supplierId, "supplier_id"),
+                new QueryParameter($"{supplierId}", "supplier_id"),
                 new QueryParameter(principle.ToString(), "principle"),
                 new QueryParameter(paymentCount, "periods"),
-                new QueryParameter((Int16)Cycle.ADVANCE, "cycle")
+                new QueryParameter((short)Cycle.ADVANCE, "cycle")
             };
 
             QueryString query = new QueryString(parameters);
 
-            String resultBody = await ApiRequest.Make(
-                ProspectivePayment.Path,
+            string resultBody = await ApiRequest.Make(
+                Path,
                 query,
                 session,
                 HttpMethod.Get,
                 httpClient
             );
 
-            var responsePayload = ApiRequest.DecodeResponse<ResponsePayload>(
-                resultBody
-            );
+            // Decode JSON response
+            var responsePayload = ApiRequest.DecodeResponse<ResponsePayload>(resultBody);
 
             return new ProspectivePayment(
                 Convert.ToDecimal(responsePayload.payment),
-                responsePayload.supplierId,
+                responsePayload.supplier_id,
                 responsePayload.periods,
                 (Cycle)responsePayload.cycle
             );
-
         }
 
+        /// <summary>
+        /// Retrieve multiple ProspectivePayments from the API.
+        /// </summary>
         public static async Task<ProspectivePayment[]> RetrieveMany(
             Session session,
-            String supplierId,
-            Decimal principle,
+            long supplierId,
+            decimal principle,
             HttpClient httpClient = null
         )
         {
-
             QueryParameter[] parameters = {
                 new QueryParameter(supplierId, "supplier_id"),
                 new QueryParameter(principle.ToString(), "principle"),
-                new QueryParameter((Int16)Cycle.ADVANCE, "cycle")
+                new QueryParameter((short)Cycle.ADVANCE, "cycle")
             };
 
             QueryString query = new QueryString(parameters);
 
-            String resultBody = await ApiRequest.Make(
-                ProspectivePayment.ListPath,
+            string resultBody = await ApiRequest.Make(
+                ListPath,
                 query,
                 session,
                 HttpMethod.Get,
                 httpClient
             );
 
-            var responsePayload = ApiRequest.DecodeResponse<ArrayResponse>(
-                resultBody
-            );
+            // Decode an array of ResponsePayload
+            var responsePayloads = ApiRequest.DecodeResponse<ResponsePayload[]>(resultBody);
 
             var resultList = new List<ProspectivePayment>();
-
-            foreach (ResponsePayload payload in responsePayload)
+            foreach (ResponsePayload payload in responsePayloads)
             {
                 resultList.Add(new ProspectivePayment(
                     Convert.ToDecimal(payload.payment),
-                    payload.supplierId,
+                    payload.supplier_id,
                     payload.periods,
                     (Cycle)payload.cycle
-
                 ));
-                continue;
             }
 
             return resultList.ToArray();
-
         }
 
-        [CollectionDataContract(Name = "procuret_data", Namespace = "")]
-        internal class ArrayResponse : List<ResponsePayload> { }
-
-        [DataContract(Name="procuret_data", Namespace="")]
+        /// <summary>
+        /// This class matches the JSON the server returns. 
+        /// We'll parse it into a struct or class, then 
+        /// create ProspectivePayment from those fields.
+        /// </summary>
         internal class ResponsePayload
         {
-            [DataMember]
-            internal readonly String payment;
-
-            [DataMember]
-            internal readonly Int16 cycle;
-
-            [DataMember]
-            internal readonly String supplierId;
-
-            [DataMember]
-            internal readonly Int16 periods;
-
+            // If the API’s JSON keys differ from these property names, 
+            // you can annotate them with [JsonPropertyName("json_name")].
+            public string payment { get; set; }
+            public short cycle { get; set; }
+            public long supplier_id { get; set; }
+            public short periods { get; set; }
         }
     }
 }

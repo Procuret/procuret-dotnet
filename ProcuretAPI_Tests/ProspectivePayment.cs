@@ -15,7 +15,7 @@ namespace ProcuretAPI_Tests
 
             ProspectivePayment payment = await ProspectivePayment.Retrieve(
                 session: this.Session,
-                supplierId: "4000",
+                supplierId: 4000,
                 principle: Convert.ToDecimal("42"),
                 12
             );
@@ -31,7 +31,7 @@ namespace ProcuretAPI_Tests
         {
             var payments = await ProspectivePayment.RetrieveMany(
                 session: this.Session,
-                supplierId: "4000",
+                supplierId: 4000,
                 principle: Convert.ToDecimal("1000")
             );
 

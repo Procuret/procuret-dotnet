@@ -3,3 +3,6 @@
 */obj/*
 .DS_Store
 *.nupkg
+sdk8/*
+sdk9/*
+

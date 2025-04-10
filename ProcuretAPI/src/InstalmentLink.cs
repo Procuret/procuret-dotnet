@@ -1,85 +1,81 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
 using System.Net.Http;
 using System.Collections.Generic;
-
+using System.Text.Json.Serialization;
 
 namespace ProcuretAPI
 {
     public struct InstalmentLink
     {
+        internal const string path = "/instalment-link";
 
-        internal const String path = "/instalment-link";
-
-        public readonly String PublicId;
+        public readonly string PublicId;
         public readonly EntityHeadline Supplier;
-        public readonly Decimal InvoiceAmount;
-        public readonly String InvoiceIdentifier;
-        public readonly String InviteeEmail;
+        public readonly decimal InvoiceAmount;
+        public readonly string InvoiceIdentifier;
+        public readonly string InviteeEmail;
         public readonly Currency Denomination;
 
         internal InstalmentLink(
-            String publicId,
+            string publicId,
             EntityHeadline supplier,
-            String inviteeEmail,
-            Decimal invoiceAmount,
-            String invoiceIdentifier,
+            string inviteeEmail,
+            decimal invoiceAmount,
+            string invoiceIdentifier,
             Currency denomination
         )
         {
-            this.PublicId = publicId;
-            this.Supplier = supplier;
-            this.InviteeEmail = inviteeEmail;
-            this.InvoiceAmount = invoiceAmount;
-            this.InvoiceIdentifier = invoiceIdentifier;
-            this.Denomination = denomination;
-
-            return;
+            PublicId = publicId;
+            Supplier = supplier;
+            InviteeEmail = inviteeEmail;
+            InvoiceAmount = invoiceAmount;
+            InvoiceIdentifier = invoiceIdentifier;
+            Denomination = denomination;
         }
 
+        /// <summary>
+        /// Creates a new InstalmentLink via the API.
+        /// </summary>
         public static async Task<InstalmentLink> Create(
-            Int64 supplierId,
-            String customerEmail,
-            String invoiceIdentifier,
-            Decimal invoiceValue,
+            long supplierId,
+            string customerEmail,
+            string invoiceIdentifier,
+            decimal invoiceValue,
             CommunicationOption communication,
             Session session,
             Currency denomination
         )
         {
-            String emailCustomer;
-            if (communication == CommunicationOption.NotifyCustomer)
-            {
-                emailCustomer = "true";
-            } else
-            {
-                emailCustomer = "false";
-            }
+            string emailCustomer = (communication == CommunicationOption.NotifyCustomer)
+                ? "true"
+                : "false";
 
-            String stringSupplierId = supplierId.ToString();
-            String stringInvoiceValue = Math.Round(invoiceValue, 2).ToString();
+            string stringSupplierId = supplierId.ToString();
+            string stringInvoiceValue = Math.Round(invoiceValue, 2).ToString();
 
+            // Build our JSON payload
             CreatePayload payload = new CreatePayload(
-                stringSupplierId,
-                stringInvoiceValue,
-                customerEmail,
-                invoiceIdentifier,
-                emailCustomer,
-                (int)denomination
+                supplier_id: supplierId,
+                invoice_amount: stringInvoiceValue,
+                invitee_email: customerEmail,
+                invoice_identifier: invoiceIdentifier,
+                communicate: emailCustomer,
+                denomination: (int)denomination
             );
 
-            String resultBody = await ApiRequest.Make<CreatePayload>(
+            // Make the API request (now JSON-based)
+            string resultBody = await ApiRequest.Make(
                 path: InstalmentLink.path,
                 body: payload,
-                method: HttpMethod.Post,
-                session: session
+                session: session,
+                method: HttpMethod.Post
             );
 
-            var decodePayload = ApiRequest.DecodeResponse<DecodePayload>(
-                resultBody
-            );
+            // Decode the JSON response
+            DecodePayload decodePayload = ApiRequest.DecodeResponse<DecodePayload>(resultBody);
 
+            // Convert the response payload into our struct
             var link = new InstalmentLink(
                 decodePayload.public_id,
                 decodePayload.supplier,
@@ -97,55 +93,50 @@ namespace ProcuretAPI
             CREATED = 1
         }
 
+        /// <summary>
+        /// Retrieves multiple InstalmentLinks from the API.
+        /// </summary>
         public static async Task<InstalmentLink[]> RetrieveMany(
             Session session,
-            Int64? supplierId = null,
-            Int32 offset = 0,
-            Int32 limit = 20,
+            long? supplierId = null,
+            int offset = 0,
+            int limit = 20,
             Order order = Order.ASCENDING,
             InstalmentLink.OrderBy orderBy = InstalmentLink.OrderBy.CREATED,
-            String publicId = null
+            string publicId = null
         )
         {
-
-            List<QueryParameter> parameters = new List<QueryParameter>();
-
-            parameters.Add(new QueryParameter(offset, "offset"));
-            parameters.Add(new QueryParameter(limit, "limit"));
-            parameters.Add(new QueryParameter(order));
-            parameters.Add(new QueryParameter(orderBy));
+            var parameters = new List<QueryParameter>
+            {
+                new QueryParameter(offset, "offset"),
+                new QueryParameter(limit, "limit"),
+                new QueryParameter(order),
+                new QueryParameter(orderBy)
+            };
 
             if (supplierId != null)
             {
-                parameters.Add(
-                    new QueryParameter(supplierId ?? 0, "supplier_id")
-                );
+                parameters.Add(new QueryParameter(supplierId.Value, "supplier_id"));
             }
 
             if (publicId != null)
             {
-                parameters.Add(
-                    new QueryParameter(publicId, "public_id")
-                );
+                parameters.Add(new QueryParameter(publicId, "public_id"));
             }
 
-
-            String resultBody = await ApiRequest.Make(
+            string resultBody = await ApiRequest.Make(
                 path: InstalmentLink.path + "/list",
                 query: new QueryString(parameters),
                 session: session,
                 method: HttpMethod.Get
             );
 
-            var decodePayload = ApiRequest.DecodeResponse<DecodeArrayPayload>(
-                resultBody
-            );
+            // Decode an array of DecodePayload objects
+            DecodeArrayPayload decodePayload = ApiRequest.DecodeResponse<DecodeArrayPayload>(resultBody);
 
             var resultList = new List<InstalmentLink>();
-
-            foreach (InstalmentLink.DecodePayload link in decodePayload)
+            foreach (DecodePayload link in decodePayload)
             {
-
                 resultList.Add(new InstalmentLink(
                     link.public_id,
                     link.supplier,
@@ -154,73 +145,68 @@ namespace ProcuretAPI
                     link.invoice_identifier,
                     (Currency)link.denomination_id
                 ));
-                continue;
             }
 
             return resultList.ToArray();
-
         }
 
-        [DataContract(Name="procuret_data", Namespace="")]
+        // --------------------------
+        //      JSON Payload Types
+        // --------------------------
+
+        /// <summary>
+        /// Represents the JSON body sent when creating a new InstalmentLink.
+        /// The field names match exactly what the API expects.
+        /// </summary>
         internal struct CreatePayload
         {
-            [DataMember]
-            private readonly String supplier_id;
-            [DataMember]
-            private readonly String invoice_amount;
-            [DataMember]
-            private readonly String invitee_email;
-            [DataMember]
-            private readonly String invoice_identifier;
-            [DataMember]
-            private readonly String communicate;
-            [DataMember]
-            private readonly int denomination;
+            // Keeping these as lowercase property names so JSON matches literally
+            public long supplier_id { get; set; }
+            public string invoice_amount { get; set; }
+            public string invitee_email { get; set; }
+            public string invoice_identifier { get; set; }
+            public string communicate { get; set; }
+            public int denomination { get; set; }
 
-            internal CreatePayload(
-                String supplierId,
-                String invoiceAmount,
-                String inviteeEmail,
-                String invoiceIdentifier,
-                String communicate,
+            public CreatePayload(
+                long supplier_id,
+                string invoice_amount,
+                string invitee_email,
+                string invoice_identifier,
+                string communicate,
                 int denomination
             )
             {
-                this.supplier_id = supplierId;
-                this.invoice_amount = invoiceAmount;
-                this.invitee_email = inviteeEmail;
-                this.invoice_identifier = invoiceIdentifier;
+                this.supplier_id = supplier_id;
+                this.invoice_amount = invoice_amount;
+                this.invitee_email = invitee_email;
+                this.invoice_identifier = invoice_identifier;
                 this.communicate = communicate;
                 this.denomination = denomination;
-                return;
             }
         }
 
+        /// <summary>
+        /// Represents the JSON array returned by the API for multiple links.
+        /// Inherits from List&lt;DecodePayload&gt; so we can keep the same usage pattern.
+        /// </summary>
+        internal class DecodeArrayPayload : List<DecodePayload>
+        {
+            // No extra fields needed
+        }
 
-        [CollectionDataContract(Name = "procuret_data", Namespace = "")]
-        internal class DecodeArrayPayload : List<DecodePayload> { }
-
-        [DataContract(Name="procuret_data", Namespace="")]
+        /// <summary>
+        /// Represents the JSON structure returned by the API for a single InstalmentLink.
+        /// The field names match exactly what the API sends.
+        /// </summary>
         internal class DecodePayload
         {
-            [DataMember]
-            internal readonly String public_id;
-
-            [DataMember]
-            internal readonly EntityHeadline supplier;
-
-            [DataMember]
-            internal readonly String invitee_email;
-
-            [DataMember]
-            internal readonly String invoice_amount;
-
-            [DataMember]
-            internal readonly String invoice_identifier;
-
-            [DataMember]
-            internal readonly int denomination_id;
-
+            public string public_id { get; set; }
+            public EntityHeadline supplier { get; set; }
+            public string invitee_email { get; set; }
+            public string invoice_amount { get; set; }
+            public string invoice_identifier { get; set; }
+            public int denomination_id { get; set; }
         }
     }
 }
