@@ -11,22 +11,24 @@
     <projectUrl>https://procuret.com</projectUrl>
     <iconUrl>https://avatars1.githubusercontent.com/u/44771526</iconUrl>
     <icon>logo.png</icon>
-    <description>A .NET Standard libary for the Procuret API. Procuret facilitates business to business transations. Suppliers get paid upfront, while customer businesses pay over time. Use Procuret .NET to add Procuret as a payment option in your .NET application.
+    <description>A .NET library for the Procuret API. Procuret facilitates business to business transations. Suppliers get paid upfront, while customer businesses pay over time. Use Procuret .NET to add Procuret as a payment option in your .NET application.
     </description>
-    <summary>A .NET Standard libary for the Procuret API. Procuret facilitates business to business transations. Suppliers get paid upfront, while customer businesses pay over time. Use Procuret .NET to add Procuret as a payment option in your .NET application.
+    <summary>A .NET library for the Procuret API. Procuret facilitates business to business transations. Suppliers get paid upfront, while customer businesses pay over time. Use Procuret .NET to add Procuret as a payment option in your .NET application.
     </summary>
-    <releaseNotes>Added `ProspectivePayment.RetrieveMany()`, `InstalmentLink.RetrieveMany()`</releaseNotes>
-    <copyright>Copyright 2021 Procuret Operating Pty Ltd</copyright>
+    <releaseNotes>Update to .NET8, replace XML serialization with JSON, add Currency parameter to InstalmentLink</releaseNotes>
+    <copyright>Copyright 2025 Procuret Operating Pty Ltd</copyright>
     <tags>api finance</tags>
     <language>en-au</language>
     <repository
       type="git"
       url="https://github.com/Procuret/procuret-dotnet/"
       branch="master"
-      commit="ccd88b98b5256e6839de0464aee38364b3616b30"
+      commit="4b4e98a0509dd1b1a59f8f4d3777e6f3d244e6fe"
     />
+    <readme>..docs/readme.md</readme>
   </metadata>
   <files>
     <file src="./img/logo.png"/>
+    <file src="../readme.md"/>
   </files>
 </package>

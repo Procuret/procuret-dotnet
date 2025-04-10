@@ -17,6 +17,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType></DebugType>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 </Project>

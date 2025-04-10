@@ -1,6 +1,6 @@
 # Procuret .NET
 
-A Microsoft .NET Standard library for interfacing with the Procuret API.
+A Microsoft .NET library for interfacing with the Procuret API.
 
 ## Contents
 
